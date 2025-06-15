@@ -49,12 +49,7 @@
               />
               <div
                 class="flex items-center px-3 py-2 rounded-md border-2 transition-all focus-outline"
-                :class="[
-                  selectedPriority === priority.value
-                    ? `border-${priority.color} bg-${priority.color} bg-opacity-10`
-                    : 'border-gray-300 hover:border-gray-400',
-                  'tabindex-0'
-                ]"
+                :class="getPriorityButtonClasses(priority.value)"
                 tabindex="0"
                 @click="selectPriority(priority.value)"
                 @keydown.enter="selectPriority(priority.value)"
@@ -110,6 +105,26 @@ const priorities = [
 
 const selectPriority = (priority: Priority) => {
   selectedPriority.value = priority
+}
+
+// Helper function to get priority button classes with guaranteed Tailwind compilation
+const getPriorityButtonClasses = (priority: Priority) => {
+  const isSelected = selectedPriority.value === priority
+  
+  if (isSelected) {
+    switch (priority) {
+      case 'critical':
+        return 'border-red-500 bg-opacity-10'
+      case 'moderate':
+        return 'border-yellow-500 bg-opacity-10'
+      case 'optional':
+        return 'border-green-500 bg-opacity-10'
+      default:
+        return 'border-gray-300'
+    }
+  } else {
+    return 'border-gray-300 hover:border-gray-400'
+  }
 }
 
 const handleSubmit = async () => {

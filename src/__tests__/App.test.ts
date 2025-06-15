@@ -40,7 +40,7 @@ describe('App', () => {
 
     const header = wrapper.find('header')
     expect(header.exists()).toBe(true)
-    expect(header.text()).toContain('Todo List with Priorities')
+    expect(header.text()).toContain('Todo List')
     expect(header.text()).toContain('Organize your tasks by priority: Critical, Moderate, and Optional')
   })
 
@@ -119,7 +119,7 @@ describe('App', () => {
 
     expect(wrapper.find('header').exists()).toBe(true)
     expect(wrapper.find('main').exists()).toBe(true)
-    expect(wrapper.find('h1').text()).toBe('Todo List with Priorities')
+    expect(wrapper.find('h1').text()).toBe('Todo List')
   })
 
   it('has responsive layout classes', () => {

@@ -3,7 +3,7 @@
     <div class="max-w-4xl mx-auto px-4">
       <header class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900 text-center">
-          Todo List with Priorities
+          Todo List
         </h1>
         <p class="text-gray-600 text-center mt-2">
           Organize your tasks by priority: Critical, Moderate, and Optional

@@ -39,3 +39,43 @@ body {
 .bg-priority-optional {
   background-color: var(--priority-optional);
 }
+
+/* Priority border utilities */
+.border-priority-critical {
+  border-color: var(--priority-critical);
+}
+
+.border-priority-moderate {
+  border-color: var(--priority-moderate);
+}
+
+.border-priority-optional {
+  border-color: var(--priority-optional);
+}
+
+/* Ensure dynamic color classes are available */
+@layer utilities {
+  .border-red-500 {
+    border-color: #ef4444;
+  }
+  
+  .border-yellow-500 {
+    border-color: #f59e0b;
+  }
+  
+  .border-green-500 {
+    border-color: #10b981;
+  }
+  
+  .bg-red-500 {
+    background-color: #ef4444;
+  }
+  
+  .bg-yellow-500 {
+    background-color: #f59e0b;
+  }
+  
+  .bg-green-500 {
+    background-color: #10b981;
+  }
+}

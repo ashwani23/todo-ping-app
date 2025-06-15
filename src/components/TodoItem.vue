@@ -89,11 +89,7 @@
               />
               <div
                 class="flex items-center px-2 py-1 rounded text-xs border-2 transition-all focus-outline"
-                :class="[
-                  editPriority === priority.value
-                    ? `border-${priority.color} bg-${priority.color} bg-opacity-10`
-                    : 'border-gray-300 hover:border-gray-400'
-                ]"
+                :class="getEditPriorityButtonClasses(priority.value)"
                 tabindex="0"
                 @click="editPriority = priority.value"
                 @keydown.enter="editPriority = priority.value"
@@ -160,6 +156,26 @@ const priorities = [
   { value: 'moderate' as Priority, label: 'Moderate', color: 'yellow-500' },
   { value: 'optional' as Priority, label: 'Optional', color: 'green-500' }
 ]
+
+// Helper function to get edit priority button classes with guaranteed Tailwind compilation
+const getEditPriorityButtonClasses = (priority: Priority) => {
+  const isSelected = editPriority.value === priority
+  
+  if (isSelected) {
+    switch (priority) {
+      case 'critical':
+        return 'border-red-500 bg-opacity-10'
+      case 'moderate':
+        return 'border-yellow-500 bg-opacity-10'
+      case 'optional':
+        return 'border-green-500 bg-opacity-10'
+      default:
+        return 'border-gray-300'
+    }
+  } else {
+    return 'border-gray-300 hover:border-gray-400'
+  }
+}
 
 // Initialize edit values when editing starts
 watch(() => props.isEditing, async (isEditing) => {

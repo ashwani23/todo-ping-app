@@ -7,13 +7,13 @@ describe('Todo App E2E Tests', () => {
     cy.visit('/')
     
     // Wait for the app to load
-    cy.get('h1').should('contain', 'Todo List with Priorities')
+    cy.get('h1').should('contain', 'Todo List')
   })
 
   describe('Initial State', () => {
     it('should display the correct initial state', () => {
       // Check main heading
-      cy.get('h1').should('contain', 'Todo List with Priorities')
+      cy.get('h1').should('contain', 'Todo List')
       
       // Check subtitle
       cy.contains('Organize your tasks by priority').should('be.visible')
