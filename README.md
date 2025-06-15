@@ -5,7 +5,6 @@ A modern Vue.js 3 todo application with **accessibility-first design**, featurin
 [![Vue 3](https://img.shields.io/badge/Vue-3.x-4FC08D.svg)](https://vuejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6.svg)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.x-38B2AC.svg)](https://tailwindcss.com/)
-[![Test Coverage](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)](https://jestjs.io/)
 
 ## ✨ Key Features
 
@@ -131,7 +130,6 @@ src/
 ```
 
 ### **🎯 Key Improvements**
-- **51% reduction** in component code through centralization
 - **Zero code duplication** across the application
 - **Type-safe utilities** for consistent behavior
 - **Reusable components** for better maintainability
