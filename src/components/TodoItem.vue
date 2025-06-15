@@ -16,7 +16,7 @@
           <div class="flex items-center mt-1 text-sm text-gray-500">
             <span class="capitalize font-medium">{{ todo.priority }}</span>
             <span class="mx-2">•</span>
-            <time :datetime="todo.createdAt.toISOString()">
+            <time :datetime="todo?.createdAt?.toISOString()">
               {{ formatDate(todo.createdAt) }}
             </time>
           </div>
@@ -150,8 +150,8 @@ const emit = defineEmits<{
   cancelEditing: []
 }>()
 
-const editText = ref('')
-const editPriority = ref<Priority>('moderate')
+const editText = ref(props.todo.text)
+const editPriority = ref<Priority>(props.todo.priority)
 const editError = ref('')
 const editInput = ref<HTMLInputElement>()
 
@@ -172,7 +172,7 @@ watch(() => props.isEditing, async (isEditing) => {
     editInput.value?.focus()
     editInput.value?.select()
   }
-})
+}, { immediate: true })
 
 const handleRemove = () => {
   if (window.confirm(`Are you sure you want to delete "${props.todo.text}"?`)) {
