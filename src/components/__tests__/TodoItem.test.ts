@@ -127,7 +127,7 @@ describe('TodoItem', () => {
     const textInput = wrapper.find('input[type="text"]')
     await textInput.setValue('Updated todo')
 
-    // Select critical priority
+    // Select critical priority using PrioritySelector
     const criticalButton = wrapper.findAll('[role="button"]')[0]
     await criticalButton.trigger('click')
 
@@ -212,5 +212,84 @@ describe('TodoItem', () => {
 
     await textInput.setValue('Some text')
     expect(saveButton.attributes('disabled')).toBeUndefined()
+  })
+
+  it('uses PrioritySelector component in edit mode', async () => {
+    const wrapper = mount(TodoItem, {
+      props: { todo, isEditing: true }
+    })
+
+    await wrapper.vm.$nextTick()
+
+    // Should have PrioritySelector component
+    const prioritySelector = wrapper.findComponent({ name: 'PrioritySelector' })
+    expect(prioritySelector.exists()).toBe(true)
+    
+    // Should pass correct props for compact mode
+    expect(prioritySelector.props('modelValue')).toBe('moderate')
+    expect(prioritySelector.props('compact')).toBe(true)
+    expect(prioritySelector.props('name')).toBe('1') // todo.id
+  })
+
+  it('handles PrioritySelector modelValue updates in edit mode', async () => {
+    const wrapper = mount(TodoItem, {
+      props: { todo, isEditing: true }
+    })
+
+    await wrapper.vm.$nextTick()
+
+    const prioritySelector = wrapper.findComponent({ name: 'PrioritySelector' })
+    
+    // Simulate priority change from PrioritySelector
+    await prioritySelector.vm.$emit('update:modelValue', 'critical')
+    
+    expect(wrapper.vm.editPriority).toBe('critical')
+  })
+
+  it('shows priority indicator with correct classes', () => {
+    const wrapper = mount(TodoItem, {
+      props: { todo, isEditing: false }
+    })
+
+    const indicator = wrapper.find('.bg-priority-moderate')
+    expect(indicator.exists()).toBe(true)
+  })
+
+  it('focuses and selects text input when editing starts', async () => {
+    const wrapper = mount(TodoItem, {
+      props: { todo, isEditing: false },
+      attachTo: document.body
+    })
+
+    // Change to editing mode
+    await wrapper.setProps({ isEditing: true })
+    await wrapper.vm.$nextTick()
+
+    const textInput = wrapper.find('input[type="text"]')
+    expect(document.activeElement).toBe(textInput.element)
+
+    wrapper.unmount()
+  })
+
+  it('clears error when editing is cancelled', async () => {
+    const wrapper = mount(TodoItem, {
+      props: { todo, isEditing: true }
+    })
+
+    await wrapper.vm.$nextTick()
+
+    // Set an error first
+    const textInput = wrapper.find('input[type="text"]')
+    await textInput.setValue('')
+    await textInput.trigger('keydown.enter')
+    await wrapper.vm.$nextTick()
+    
+    expect(wrapper.find('[role="alert"]').exists()).toBe(true)
+
+    // Cancel editing should clear error
+    const cancelButton = wrapper.find('button[aria-label="Cancel editing"]')
+    await cancelButton.trigger('click')
+
+    expect(wrapper.vm.error).toBe('')
   })
 })

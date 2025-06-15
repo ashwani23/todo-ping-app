@@ -53,6 +53,7 @@ describe('TodoList', () => {
     const clearButton = wrapper.find('button[aria-label*="Clear all"]')
     expect(clearButton.exists()).toBe(true)
     expect(clearButton.text()).toBe('Clear All')
+    expect(clearButton.attributes('aria-label')).toBe('Clear all 3 todos')
   })
 
   it('does not show clear all button when there are no todos', () => {

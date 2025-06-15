@@ -1,32 +1,22 @@
-import { computed, ref, Ref } from 'vue'
+import { computed, ref } from 'vue'
 import { Todo, Priority } from '@/types/todo'
 import { useLocalStorage } from './useLocalStorage'
+import { PRIORITY_ORDER } from '@/utils/priority'
+import { generateId } from '@/utils/helpers'
 
 export function useTodos() {
   const { todos, saveTodos } = useLocalStorage()
   const editingId = ref<string | null>(null)
 
-  // Priority order for sorting
-  const priorityOrder: Record<Priority, number> = {
-    critical: 1,
-    moderate: 2,
-    optional: 3
-  }
-
   // Computed sorted todos
   const sortedTodos = computed(() => {
     return [...todos.value].sort((a, b) => {
-      const priorityDiff = priorityOrder[a.priority] - priorityOrder[b.priority]
+      const priorityDiff = PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]
       if (priorityDiff !== 0) return priorityDiff
       // If same priority, sort by creation date (newest first)
       return b.createdAt.getTime() - a.createdAt.getTime()
     })
   })
-
-  // Generate unique ID
-  const generateId = (): string => {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2)
-  }
 
   // Add new todo
   const addTodo = (text: string, priority: Priority): void => {

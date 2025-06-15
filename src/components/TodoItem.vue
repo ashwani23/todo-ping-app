@@ -7,9 +7,9 @@
     <div v-if="!isEditing" class="flex items-center justify-between">
       <div class="flex items-center flex-1 min-w-0">
         <div
-          class="w-3 h-3 rounded-full mr-3 flex-shrink-0"
-          :class="`bg-priority-${todo.priority}`"
-          :aria-label="`${todo.priority} priority`"
+          :class="getPriorityIndicatorClasses(todo.priority)"
+          class="mr-3 flex-shrink-0"
+          :aria-label="getPriorityAriaLabel(todo.priority)"
         ></div>
         <div class="flex-1 min-w-0">
           <p class="text-gray-900 font-medium truncate">{{ todo.text }}</p>
@@ -27,7 +27,7 @@
         <button
           @click="$emit('startEditing')"
           class="text-blue-600 hover:text-blue-800 p-1 rounded focus-outline"
-          :aria-label="`Edit todo: ${todo.text}`"
+          :aria-label="getTodoActionAriaLabel('edit', todo.text)"
         >
           <span class="sr-only">Edit</span>
           ✏️
@@ -35,7 +35,7 @@
         <button
           @click="handleRemove"
           class="text-red-600 hover:text-red-800 p-1 rounded focus-outline"
-          :aria-label="`Delete todo: ${todo.text}`"
+          :aria-label="getTodoActionAriaLabel('delete', todo.text)"
         >
           <span class="sr-only">Delete</span>
           🗑️
@@ -59,55 +59,21 @@
           @keydown.escape="handleCancel"
         />
         <div
-          v-if="editError"
+          v-if="error"
           :id="`edit-error-${todo.id}`"
           class="text-red-600 text-sm mt-1"
           role="alert"
           aria-live="polite"
         >
-          {{ editError }}
+          {{ error }}
         </div>
       </div>
 
-      <div>
-        <fieldset>
-          <legend class="block text-sm font-medium text-gray-700 mb-2">
-            Priority Level
-          </legend>
-          <div class="flex gap-2">
-            <label
-              v-for="priority in priorities"
-              :key="priority.value"
-              class="flex items-center cursor-pointer"
-            >
-              <input
-                v-model="editPriority"
-                :value="priority.value"
-                type="radio"
-                :name="`edit-priority-${todo.id}`"
-                class="sr-only"
-              />
-              <div
-                class="flex items-center px-2 py-1 rounded text-xs border-2 transition-all focus-outline"
-                :class="getEditPriorityButtonClasses(priority.value)"
-                tabindex="0"
-                @click="editPriority = priority.value"
-                @keydown.enter="editPriority = priority.value"
-                @keydown.space.prevent="editPriority = priority.value"
-                :aria-pressed="editPriority === priority.value"
-                role="button"
-              >
-                <div
-                  class="w-2 h-2 rounded-full mr-1"
-                  :class="`bg-priority-${priority.value}`"
-                  :aria-hidden="true"
-                ></div>
-                <span class="capitalize">{{ priority.label }}</span>
-              </div>
-            </label>
-          </div>
-        </fieldset>
-      </div>
+      <PrioritySelector
+        v-model="editPriority"
+        :name="todo.id"
+        compact
+      />
 
       <div class="flex gap-2">
         <button
@@ -133,6 +99,11 @@
 <script setup lang="ts">
 import { ref, watch, nextTick } from 'vue'
 import { Todo, Priority } from '@/types/todo'
+import { useFormValidation } from '@/composables/useFormValidation'
+import { formatDate, confirmAction } from '@/utils/helpers'
+import { getPriorityIndicatorClasses } from '@/utils/priority'
+import { getPriorityAriaLabel, getTodoActionAriaLabel } from '@/utils/accessibility'
+import PrioritySelector from './PrioritySelector.vue'
 
 const props = defineProps<{
   todo: Todo
@@ -148,41 +119,16 @@ const emit = defineEmits<{
 
 const editText = ref(props.todo.text)
 const editPriority = ref<Priority>(props.todo.priority)
-const editError = ref('')
 const editInput = ref<HTMLInputElement>()
 
-const priorities = [
-  { value: 'critical' as Priority, label: 'Critical', color: 'red-500' },
-  { value: 'moderate' as Priority, label: 'Moderate', color: 'yellow-500' },
-  { value: 'optional' as Priority, label: 'Optional', color: 'green-500' }
-]
-
-// Helper function to get edit priority button classes with guaranteed Tailwind compilation
-const getEditPriorityButtonClasses = (priority: Priority) => {
-  const isSelected = editPriority.value === priority
-  
-  if (isSelected) {
-    switch (priority) {
-      case 'critical':
-        return 'border-red-500 bg-opacity-10'
-      case 'moderate':
-        return 'border-yellow-500 bg-opacity-10'
-      case 'optional':
-        return 'border-green-500 bg-opacity-10'
-      default:
-        return 'border-gray-300'
-    }
-  } else {
-    return 'border-gray-300 hover:border-gray-400'
-  }
-}
+const { error, validateText, clearError } = useFormValidation()
 
 // Initialize edit values when editing starts
 watch(() => props.isEditing, async (isEditing) => {
   if (isEditing) {
     editText.value = props.todo.text
     editPriority.value = props.todo.priority
-    editError.value = ''
+    clearError()
     
     await nextTick()
     editInput.value?.focus()
@@ -191,16 +137,15 @@ watch(() => props.isEditing, async (isEditing) => {
 }, { immediate: true })
 
 const handleRemove = () => {
-  if (window.confirm(`Are you sure you want to delete "${props.todo.text}"?`)) {
+  if (confirmAction(`Are you sure you want to delete "${props.todo.text}"?`)) {
     emit('remove')
   }
 }
 
 const handleUpdate = () => {
-  editError.value = ''
+  clearError()
   
-  if (!editText.value.trim()) {
-    editError.value = 'Please enter a task description'
+  if (!validateText(editText.value, 'task description')) {
     return
   }
 
@@ -212,16 +157,7 @@ const handleUpdate = () => {
 }
 
 const handleCancel = () => {
-  editError.value = ''
+  clearError()
   emit('cancelEditing')
-}
-
-const formatDate = (date: Date): string => {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit'
-  }).format(date)
 }
 </script>

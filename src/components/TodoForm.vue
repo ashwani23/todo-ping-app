@@ -28,54 +28,16 @@
         </div>
       </div>
 
-      <div>
-        <fieldset>
-          <legend class="block text-sm font-medium text-gray-700 mb-2">
-            Priority Level
-          </legend>
-          <div class="flex gap-4">
-            <label
-              v-for="priority in priorities"
-              :key="priority.value"
-              class="flex items-center cursor-pointer"
-            >
-              <input
-                v-model="selectedPriority"
-                :value="priority.value"
-                type="radio"
-                :name="`priority-${formId}`"
-                class="sr-only"
-                @keydown.enter="selectPriority(priority.value)"
-              />
-              <div
-                class="flex items-center px-3 py-2 rounded-md border-2 transition-all focus-outline"
-                :class="getPriorityButtonClasses(priority.value)"
-                tabindex="0"
-                @click="selectPriority(priority.value)"
-                @keydown.enter="selectPriority(priority.value)"
-                @keydown.space.prevent="selectPriority(priority.value)"
-                :aria-pressed="selectedPriority === priority.value"
-                role="button"
-              >
-                <div
-                  class="w-3 h-3 rounded-full mr-2"
-                  :class="`bg-priority-${priority.value}`"
-                  :aria-hidden="true"
-                ></div>
-                <span class="text-sm font-medium capitalize">
-                  {{ priority.label }}
-                </span>
-              </div>
-            </label>
-          </div>
-        </fieldset>
-      </div>
+      <PrioritySelector
+        v-model="selectedPriority"
+        :name="formId"
+      />
 
       <button
         type="submit"
         class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus-outline disabled:opacity-50 disabled:cursor-not-allowed"
         :disabled="!todoText.trim()"
-        :aria-label="`Add new ${selectedPriority} priority todo`"
+        :aria-label="getAddTodoAriaLabel(selectedPriority)"
       >
         Add Todo
       </button>
@@ -86,6 +48,10 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted } from 'vue'
 import { Priority } from '@/types/todo'
+import { useFormValidation } from '@/composables/useFormValidation'
+import { generateFormId } from '@/utils/helpers'
+import { getAddTodoAriaLabel } from '@/utils/accessibility'
+import PrioritySelector from './PrioritySelector.vue'
 
 const emit = defineEmits<{
   addTodo: [{ text: string; priority: Priority }]
@@ -93,45 +59,15 @@ const emit = defineEmits<{
 
 const todoText = ref('')
 const selectedPriority = ref<Priority>('moderate')
-const error = ref('')
 const textInput = ref<HTMLInputElement>()
-const formId = ref(Math.random().toString(36).substr(2, 9))
+const formId = ref(generateFormId())
 
-const priorities = [
-  { value: 'critical' as Priority, label: 'Critical', color: 'red-500' },
-  { value: 'moderate' as Priority, label: 'Moderate', color: 'yellow-500' },
-  { value: 'optional' as Priority, label: 'Optional', color: 'green-500' }
-]
-
-const selectPriority = (priority: Priority) => {
-  selectedPriority.value = priority
-}
-
-// Helper function to get priority button classes with guaranteed Tailwind compilation
-const getPriorityButtonClasses = (priority: Priority) => {
-  const isSelected = selectedPriority.value === priority
-  
-  if (isSelected) {
-    switch (priority) {
-      case 'critical':
-        return 'border-red-500 bg-opacity-10'
-      case 'moderate':
-        return 'border-yellow-500 bg-opacity-10'
-      case 'optional':
-        return 'border-green-500 bg-opacity-10'
-      default:
-        return 'border-gray-300'
-    }
-  } else {
-    return 'border-gray-300 hover:border-gray-400'
-  }
-}
+const { error, validateText, clearError } = useFormValidation()
 
 const handleSubmit = async () => {
-  error.value = ''
+  clearError()
   
-  if (!todoText.value.trim()) {
-    error.value = 'Please enter a task description'
+  if (!validateText(todoText.value, 'task description')) {
     return
   }
 

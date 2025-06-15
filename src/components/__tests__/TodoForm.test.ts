@@ -38,7 +38,7 @@ describe('TodoForm', () => {
     
     await textInput.setValue('Test todo item')
     
-    // Select critical priority
+    // Select critical priority using PrioritySelector
     const criticalButton = wrapper.findAll('[role="button"]')[0]
     await criticalButton.trigger('click')
     
@@ -117,7 +117,7 @@ describe('TodoForm', () => {
     const textInput = wrapper.find('input[type="text"]')
     await textInput.setValue('Test todo')
     
-    // Change priority to critical
+    // Change priority to critical using PrioritySelector
     const criticalButton = wrapper.findAll('[role="button"]')[0]
     await criticalButton.trigger('click')
     
@@ -249,20 +249,33 @@ describe('TodoForm', () => {
     // Should start with moderate priority
     expect(submitButton.attributes('aria-label')).toBe('Add new moderate priority todo')
     
-    // Change to critical
+    // Change to critical using PrioritySelector
     const criticalButton = wrapper.findAll('[role="button"]')[0]
     await criticalButton.trigger('click')
     
     expect(submitButton.attributes('aria-label')).toBe('Add new critical priority todo')
   })
 
-  it('selects priority using selectPriority method directly', () => {
+  it('uses PrioritySelector component', () => {
     const wrapper = mount(TodoForm)
     
-    wrapper.vm.selectPriority('optional')
-    expect(wrapper.vm.selectedPriority).toBe('optional')
+    // Should have PrioritySelector component
+    const prioritySelector = wrapper.findComponent({ name: 'PrioritySelector' })
+    expect(prioritySelector.exists()).toBe(true)
     
-    wrapper.vm.selectPriority('critical')
+    // Should pass correct props
+    expect(prioritySelector.props('modelValue')).toBe('moderate')
+    expect(prioritySelector.props('compact')).toBe(false)
+  })
+
+  it('handles PrioritySelector modelValue updates', async () => {
+    const wrapper = mount(TodoForm)
+    
+    const prioritySelector = wrapper.findComponent({ name: 'PrioritySelector' })
+    
+    // Simulate priority change from PrioritySelector
+    await prioritySelector.vm.$emit('update:modelValue', 'critical')
+    
     expect(wrapper.vm.selectedPriority).toBe('critical')
   })
 })

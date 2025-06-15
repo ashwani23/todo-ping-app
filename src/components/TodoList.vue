@@ -8,7 +8,7 @@
         v-if="todos.length > 0"
         @click="handleClearAll"
         class="text-red-600 hover:text-red-800 text-sm font-medium focus-outline px-2 py-1 rounded"
-        :aria-label="`Clear all ${todos.length} todos`"
+        :aria-label="getClearAllAriaLabel(todos.length)"
       >
         Clear All
       </button>
@@ -36,6 +36,8 @@
 
 <script setup lang="ts">
 import { Todo, Priority } from '@/types/todo'
+import { confirmAction } from '@/utils/helpers'
+import { getClearAllAriaLabel } from '@/utils/accessibility'
 import TodoItem from './TodoItem.vue'
 
 defineProps<{
@@ -56,7 +58,7 @@ const handleUpdate = (data: { id: string; text: string; priority: Priority }) =>
 }
 
 const handleClearAll = () => {
-  if (window.confirm('Are you sure you want to clear all todos? This action cannot be undone.')) {
+  if (confirmAction('Are you sure you want to clear all todos? This action cannot be undone.')) {
     emit('clearAll')
   }
 }
