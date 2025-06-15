@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 // ***********************************************************
 // This example support/component.ts is processed and
 // loaded automatically before your component test files.
@@ -15,13 +17,11 @@
 
 // Import commands.ts using ES2015 syntax:
 import './commands'
+// Type declarations are automatically loaded
 import { mount } from '@cypress/vue'
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
-// Alternatively, can be defined in cypress/support/component.d.ts
-// with a <reference path="./component" /> at the top of your spec.
-
 declare global {
   namespace Cypress {
     interface Chainable {
