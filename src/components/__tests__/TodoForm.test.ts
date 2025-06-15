@@ -28,7 +28,7 @@ describe('TodoForm', () => {
     
     const moderateButton = wrapper.findAll('[role="button"]')[1]
     expect(moderateButton.attributes('aria-pressed')).toBe('true')
-    expect(wrapper.vm.selectedPriority).toBe('moderate')
+    expect((wrapper.vm as any).selectedPriority).toBe('moderate')
   })
 
   it('emits add-todo event with correct data', async () => {
@@ -55,7 +55,7 @@ describe('TodoForm', () => {
   })
 
   it('shows error for empty input', async () => {
-    const wrapper = mount(TodoForm)
+    const wrapper: any = mount(TodoForm)
     
     // Directly call the submit handler since button is disabled for empty input
     await wrapper.vm.handleSubmit()
@@ -73,7 +73,7 @@ describe('TodoForm', () => {
   })
 
   it('shows error for whitespace-only input', async () => {
-    const wrapper = mount(TodoForm)
+    const wrapper: any = mount(TodoForm)
     
     const textInput = wrapper.find('input[type="text"]')
     await textInput.setValue('   ')
@@ -87,7 +87,7 @@ describe('TodoForm', () => {
   })
 
   it('disables submit button when input is empty', async () => {
-    const wrapper = mount(TodoForm)
+    const wrapper: any = mount(TodoForm)
     
     const textInput = wrapper.find('input[type="text"]')
     const submitButton = wrapper.find('button[type="submit"]')
@@ -129,8 +129,8 @@ describe('TodoForm', () => {
     await wrapper.vm.$nextTick()
     
     // Check that form is reset to default values
-    expect(wrapper.vm.todoText).toBe('')
-    expect(wrapper.vm.selectedPriority).toBe('moderate')
+    expect((wrapper.vm as any).todoText).toBe('')
+    expect((wrapper.vm as any).selectedPriority).toBe('moderate')
     expect((textInput.element as HTMLInputElement).value).toBe('')
   })
 
@@ -142,7 +142,7 @@ describe('TodoForm', () => {
     await criticalButton.trigger('keydown.enter')
     
     expect(criticalButton.attributes('aria-pressed')).toBe('true')
-    expect(wrapper.vm.selectedPriority).toBe('critical')
+    expect((wrapper.vm as any).selectedPriority).toBe('critical')
   })
 
   it('allows keyboard navigation for priority selection with Space', async () => {
@@ -153,7 +153,7 @@ describe('TodoForm', () => {
     await optionalButton.trigger('keydown.space')
     
     expect(optionalButton.attributes('aria-pressed')).toBe('true')
-    expect(wrapper.vm.selectedPriority).toBe('optional')
+    expect((wrapper.vm as any).selectedPriority).toBe('optional')
   })
 
   it('allows radio input keyboard navigation with Enter', async () => {
@@ -162,11 +162,11 @@ describe('TodoForm', () => {
     const radioInput = wrapper.findAll('input[type="radio"]')[0]
     await radioInput.trigger('keydown.enter')
     
-    expect(wrapper.vm.selectedPriority).toBe('critical')
+    expect((wrapper.vm as any).selectedPriority).toBe('critical')
   })
 
   it('clears error when valid input is provided after error', async () => {
-    const wrapper = mount(TodoForm)
+    const wrapper: any = mount(TodoForm)
     
     // First trigger an error
     await wrapper.vm.handleSubmit()
@@ -182,7 +182,7 @@ describe('TodoForm', () => {
     
     // Error should be cleared
     expect(wrapper.find('[role="alert"]').exists()).toBe(false)
-    expect(wrapper.vm.error).toBe('')
+    expect((wrapper.vm as any).error).toBe('')
   })
 
   it('focuses text input on mount', async () => {
@@ -276,6 +276,6 @@ describe('TodoForm', () => {
     // Simulate priority change from PrioritySelector
     await prioritySelector.vm.$emit('update:modelValue', 'critical')
     
-    expect(wrapper.vm.selectedPriority).toBe('critical')
+    expect((wrapper.vm as any).selectedPriority).toBe('critical')
   })
 })

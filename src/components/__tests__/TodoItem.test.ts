@@ -114,7 +114,7 @@ describe('TodoItem', () => {
 
     const textInput = wrapper.find('input[type="text"]')
     expect((textInput.element as HTMLInputElement).value).toBe('Test todo')
-    expect(wrapper.vm.editPriority).toBe('moderate')
+    expect((wrapper.vm as any).editPriority).toBe('moderate')
   })
 
   it('updates todo when save button is clicked', async () => {
@@ -243,7 +243,7 @@ describe('TodoItem', () => {
     // Simulate priority change from PrioritySelector
     await prioritySelector.vm.$emit('update:modelValue', 'critical')
     
-    expect(wrapper.vm.editPriority).toBe('critical')
+    expect((wrapper.vm as any).editPriority).toBe('critical')
   })
 
   it('shows priority indicator with correct classes', () => {
@@ -290,6 +290,6 @@ describe('TodoItem', () => {
     const cancelButton = wrapper.find('button[aria-label="Cancel editing"]')
     await cancelButton.trigger('click')
 
-    expect(wrapper.vm.error).toBe('')
+    expect((wrapper.vm as any).error).toBe('')
   })
 })
