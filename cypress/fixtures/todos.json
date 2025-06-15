@@ -1,0 +1,22 @@
+{
+  "sampleTodos": [
+    {
+      "id": "1",
+      "text": "Critical task - Fix production bug",
+      "priority": "critical",
+      "createdAt": "2024-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "2", 
+      "text": "Moderate task - Review pull request",
+      "priority": "moderate",
+      "createdAt": "2024-01-01T11:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "text": "Optional task - Update documentation",
+      "priority": "optional", 
+      "createdAt": "2024-01-01T12:00:00.000Z"
+    }
+  ]
+}

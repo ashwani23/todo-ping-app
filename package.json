@@ -1,0 +1,43 @@
+{
+  "name": "todo-ping-app",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "cypress open",
+    "test:e2e:headless": "cypress run",
+    "test:component": "cypress open --component",
+    "test:component:headless": "cypress run --component"
+  },
+  "dependencies": {
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "@babel/preset-typescript": "^7.23.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@vitejs/plugin-vue": "^4.6.2",
+    "@vue/test-utils": "^2.4.0",
+    "@vue/vue3-jest": "^29.2.0",
+    "autoprefixer": "^10.4.16",
+    "babel-jest": "^29.7.0",
+    "cypress": "^13.6.0",
+    "@cypress/vue": "^6.0.0",
+    "@cypress/vite-dev-server": "^5.0.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "postcss": "^8.4.31",
+    "sass": "^1.69.5",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.3",
+    "vue-tsc": "^1.8.22"
+  }
+}

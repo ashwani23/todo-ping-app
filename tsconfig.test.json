@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["jest", "node"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue", 
+    "src/**/__tests__/**/*",
+    "src/**/*.test.*"
+  ],
+  "exclude": [
+    "node_modules",
+    "cypress"
+  ]
+}
