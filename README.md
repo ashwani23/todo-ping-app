@@ -2,9 +2,18 @@
 
 A modern Vue.js 3 todo application with **accessibility-first design**, featuring comprehensive priority management, clean architecture, and enterprise-grade testing. Built with reusable components and centralized utilities for maximum maintainability.
 
+## 🌐 Live Demo
+
+**[🔗 Try the App Live](https://pingi-todo-app.netlify.app/)**
+
+*Experience the accessibility features, keyboard navigation, and priority management in action!*
+
+---
+
 [![Vue 3](https://img.shields.io/badge/Vue-3.x-4FC08D.svg)](https://vuejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6.svg)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.x-38B2AC.svg)](https://tailwindcss.com/)
+[![Live Demo](https://img.shields.io/badge/Demo-Live-success.svg)](https://pingi-todo-app.netlify.app/)
 
 ## ✨ Key Features
 
